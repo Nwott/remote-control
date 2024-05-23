@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase
     version = 1
 )
 abstract class RCActionDatabase : RoomDatabase() {
-    abstract val rcDao: RCDao
+    abstract val rcActionDao: RCActionDao
 
     companion object {
         const val DATABASE_NAME = "rc_actions_db"

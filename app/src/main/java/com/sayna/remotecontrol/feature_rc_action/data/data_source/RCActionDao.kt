@@ -9,7 +9,7 @@ import com.sayna.remotecontrol.feature_rc_action.domain.model.RCAction
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface RCDao {
+interface RCActionDao {
     @Query("SELECT * FROM RCAction")
     fun GetRCActions(): Flow<List<RCAction>>
 
