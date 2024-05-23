@@ -1,11 +1,11 @@
 package com.sayna.remotecontrol.repositories
 
-import android.app.RemoteAction
+import com.sayna.remotecontrol.models.RCAction
 
 class RCActionRepository {
-    private lateinit var remoteControlActions : List<RemoteAction>;
+    private lateinit var remoteControlActions : List<RCAction>
 
-    fun GetRemoteControlActions() : List<RemoteAction> {
-        return remoteControlActions;
+    fun GetRemoteControlActions() : List<RCAction> {
+        return remoteControlActions
     }
 }
