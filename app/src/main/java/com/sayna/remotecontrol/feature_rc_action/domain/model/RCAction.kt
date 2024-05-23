@@ -1,5 +1,6 @@
 package com.sayna.remotecontrol.feature_rc_action.domain.model
 
+import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.sayna.remotecontrol.ui.theme.BabyBlue
 import com.sayna.remotecontrol.ui.theme.LightGreen
@@ -7,6 +8,7 @@ import com.sayna.remotecontrol.ui.theme.RedOrange
 import com.sayna.remotecontrol.ui.theme.RedPink
 import com.sayna.remotecontrol.ui.theme.Violet
 
+@Entity
 data class RCAction(
     val title: String,
     val code: String,
