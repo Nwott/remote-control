@@ -18,11 +18,13 @@ class GetRCActionsUseCase(
                 is OrderType.Ascending -> {
                     when(rcActionOrder) {
                         is RCActionOrder.Title -> rcActions.sortedBy { it.title.lowercase() }
+                        is RCActionOrder.ID -> rcActions.sortedBy { it.id }
                     }
                 }
                 is OrderType.Descending -> {
                     when(rcActionOrder) {
                         is RCActionOrder.Title -> rcActions.sortedByDescending { it.title.lowercase() }
+                        is RCActionOrder.ID -> rcActions.sortedByDescending { it.id }
                     }
                 }
             }

@@ -1,5 +1,6 @@
 package com.sayna.remotecontrol.feature_rc_action.domain.model
 
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.sayna.remotecontrol.ui.theme.BabyBlue
