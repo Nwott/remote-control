@@ -27,9 +27,8 @@ class RemoteViewModel @Inject constructor(
 
     private var getRCActionsJob: Job? = null
 
-    // TODO: Change this to sort by id
     init {
-        GetRCActions(RCActionOrder.Title(OrderType.Descending))
+        GetRCActions(RCActionOrder.ID(OrderType.Descending))
     }
 
     fun OnEvent(event: RemoteEvent) {
