@@ -2,10 +2,12 @@ package com.sayna.remotecontrol.feature_rc_action.data.data_source
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.sayna.remotecontrol.feature_rc_action.domain.model.RCAction
 
 @Database(
-    entities = [RCActionDatabase::class],
-    version = 1
+    entities = [RCAction::class],
+    version = 1,
+    exportSchema = false
 )
 abstract class RCActionDatabase : RoomDatabase() {
     abstract val rcActionDao: RCActionDao
