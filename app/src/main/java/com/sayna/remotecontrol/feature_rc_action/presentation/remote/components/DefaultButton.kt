@@ -41,13 +41,14 @@ fun DefaultButton(
     rcAction: RCAction? = null,
     description: String = "Button description",
     textStyle: TextStyle = TextStyle(),
-    icon: ImageVector? = null
+    icon: ImageVector? = null,
+    onClick: () -> Unit = {}
 ) {
     val btnText: String = rcAction?.title ?: "No title"
     var buttonSize by remember { mutableStateOf(Size.Zero) }
 
     ElevatedButton(
-        onClick = { /*TODO*/ },
+        onClick = { onClick },
         modifier = Modifier
             .onGloballyPositioned { coordinates ->
                 buttonSize = coordinates.size.toSize()

@@ -12,6 +12,7 @@ import com.sayna.remotecontrol.ui.theme.Violet
 @Entity
 data class RCAction(
     val title: String,
+    val frequency: Int,
     val code: String,
     val color: Int,
     @PrimaryKey val id: Int? = null

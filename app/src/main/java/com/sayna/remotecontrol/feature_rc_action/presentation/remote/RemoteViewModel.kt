@@ -36,7 +36,8 @@ class RemoteViewModel @Inject constructor(
             is RemoteEvent.PerformRCAction -> {
                 // try to emit infrared signal
                 if(irManager.hasIrEmitter()) {
-
+                    // parse code in string to intarray
+                    EmitIR(event.rcAction, ParseIRCode(event.rcAction))
                 }
                 else {
                     // TODO: output error message
@@ -55,5 +56,30 @@ class RemoteViewModel @Inject constructor(
                 )
             }
             .launchIn(viewModelScope)
+    }
+
+    /* converts sendir IR code format to int array to be emitted from ir manager */
+    private fun ParseIRCode(rcAction: RCAction): IntArray {
+        val code: String = rcAction.code
+        val intList : MutableList<Int> = mutableListOf()
+
+        val strList = code.split(" ")
+
+        strList.forEach() {
+            try {
+                var str = it.replace("\\s+".toRegex(), " ")
+
+                intList.add(str.toInt() * (1000000 / rcAction.frequency))
+            } catch(e: Exception) {
+
+            }
+        }
+
+        return intList.toIntArray()
+    }
+
+    /* emits the ir code */
+    private fun EmitIR(rcAction: RCAction, pattern: IntArray) {
+        irManager.transmit(rcAction.frequency, pattern)
     }
 }

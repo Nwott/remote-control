@@ -24,8 +24,9 @@ object AppModule {
         return Room.databaseBuilder(
             app,
             RCActionDatabase::class.java,
-            RCActionDatabase.DATABASE_NAME
-        ).build()
+            RCActionDatabase.DATABASE_NAME)
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides

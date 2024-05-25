@@ -28,22 +28,26 @@ fun RemoteScreen(
     var testData: MutableList<RCAction> = mutableListOf(
         RCAction(
             title = "aloo",
-            code = "aloo",
+            frequency = 58000,
+            code = "192 192 48 144 48 144 48 48 48 144 48 144 48 144 48 144 48 144 48 48 48 48 48 48 48 48 48 48 48 144 48 48 48 48 48 48 48 48 48 48 48 144 48 144 48 144 48 2534",
             color = Color.White.toArgb(),
         ),
         RCAction(
             title = "aloo2",
-            code = "aloo2",
+            frequency = 58000,
+            code = "",
             color = Color.White.toArgb(),
         ),
         RCAction(
             title = "aloo3",
-            code = "aloo3",
+            frequency = 58000,
+            code = "",
             color = Color.White.toArgb(),
         ),
         RCAction(
             title = "aloo4",
-            code = "aloo4",
+            frequency = 58000,
+            code = "",
             color = Color.White.toArgb(),
         ),
     )
@@ -59,7 +63,8 @@ fun RemoteScreen(
         ) {
             items(testData) {rcAction ->
                 DefaultButton(
-                    rcAction = rcAction
+                    rcAction = rcAction,
+                    onClick = { viewModel.OnEvent(RemoteEvent.PerformRCAction(rcAction)) }
                 )
             }
         }

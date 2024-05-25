@@ -6,7 +6,7 @@ import com.sayna.remotecontrol.feature_rc_action.domain.model.RCAction
 
 @Database(
     entities = [RCAction::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class RCActionDatabase : RoomDatabase() {
