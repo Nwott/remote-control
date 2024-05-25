@@ -48,27 +48,20 @@ fun RemoteScreen(
         ),
     )
 
-    Scaffold(
-    )
-    {
-        Box(
-            modifier = Modifier.padding(16.dp)
+    Box(
+        modifier = Modifier.padding(16.dp)
+    ) {
+        // grid that has buttons for each RC action
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // grid that has buttons for each RC action
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                modifier = Modifier
-                    .padding(it),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(testData) {rcAction ->
-                    DefaultButton(
-                        rcAction = rcAction
-                    )
-                }
+            items(testData) {rcAction ->
+                DefaultButton(
+                    rcAction = rcAction
+                )
             }
         }
     }
-
 }
