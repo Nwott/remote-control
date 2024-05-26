@@ -1,4 +1,4 @@
-package com.sayna.remotecontrol.feature_rc_action.presentation.remote.components
+package com.sayna.remotecontrol.feature_rc_action.presentation.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -42,14 +42,15 @@ fun DefaultButton(
     description: String = "Button description",
     textStyle: TextStyle = TextStyle(),
     icon: ImageVector? = null,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    modifier: Modifier = Modifier
 ) {
     val btnText: String = rcAction?.title ?: "No title"
     var buttonSize by remember { mutableStateOf(Size.Zero) }
 
     ElevatedButton(
         onClick = { onClick },
-        modifier = Modifier
+        modifier = modifier
             .onGloballyPositioned { coordinates ->
                 buttonSize = coordinates.size.toSize()
             }

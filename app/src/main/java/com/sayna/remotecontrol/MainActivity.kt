@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.sayna.remotecontrol.feature_rc_action.presentation.edit_remote.EditRemoteScreen
 import com.sayna.remotecontrol.feature_rc_action.presentation.remote.RemoteScreen
 import com.sayna.remotecontrol.feature_rc_action.presentation.util.Screen
 import com.sayna.remotecontrol.ui.theme.RemoteControlTheme
@@ -70,7 +71,7 @@ class MainActivity : ComponentActivity() {
                     ),
                     BottomNavigationItem(
                         title = "Edit",
-                        route = "",
+                        route = Screen.EditRemoteScreen.route,
                         selectedIcon = Icons.Filled.AppRegistration,
                         unselectedIcon = Icons.Outlined.AppRegistration,
                         hasNews = false
@@ -131,20 +132,25 @@ class MainActivity : ComponentActivity() {
                                             }
                                         })
                                 }
+
+
                             }
                         }
                     ){
-
-                    }
-
-                    NavHost(
-                        navController = navController,
-                        startDestination = Screen.RemoteScreen.route
-                    ) {
-                        composable(route = Screen.RemoteScreen.route)  {
-                            RemoteScreen()
+                        NavHost(
+                            modifier = Modifier.padding(it),
+                            navController = navController,
+                            startDestination = Screen.RemoteScreen.route
+                        ) {
+                            composable(route = Screen.RemoteScreen.route)  {
+                                RemoteScreen()
+                            }
+                            composable(route = Screen.EditRemoteScreen.route) {
+                                EditRemoteScreen()
+                            }
                         }
                     }
+
                 }
             }
         }

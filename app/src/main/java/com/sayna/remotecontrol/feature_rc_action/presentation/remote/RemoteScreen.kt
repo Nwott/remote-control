@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sayna.remotecontrol.feature_rc_action.domain.model.RCAction
-import com.sayna.remotecontrol.feature_rc_action.presentation.remote.components.DefaultButton
+import com.sayna.remotecontrol.feature_rc_action.presentation.components.DefaultButton
 
 @Composable
 fun RemoteScreen(

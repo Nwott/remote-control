@@ -1,0 +1,131 @@
+package com.sayna.remotecontrol.feature_rc_action.presentation.edit_remote
+
+import android.annotation.SuppressLint
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.sayna.remotecontrol.feature_rc_action.domain.model.RCAction
+import com.sayna.remotecontrol.feature_rc_action.presentation.components.DefaultButton
+import com.sayna.remotecontrol.feature_rc_action.presentation.remote.RemoteViewModel
+import java.util.Collections
+
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Composable
+fun EditRemoteScreen(
+    viewModel: EditRemoteViewModel = hiltViewModel()
+) {
+    var testData: MutableList<RCAction> = mutableListOf(
+        RCAction(
+            title = "aloo5",
+            frequency = 58000,
+            code = "192 192 48 144 48 144 48 48 48 144 48 144 48 144 48 144 48 144 48 48 48 48 48 48 48 48 48 48 48 144 48 48 48 48 48 48 48 48 48 48 48 144 48 144 48 144 48 2534",
+            color = Color.White.toArgb(),
+        ),
+        RCAction(
+            title = "aloo6",
+            frequency = 58000,
+            code = "",
+            color = Color.White.toArgb(),
+        ),
+        RCAction(
+            title = "aloo7",
+            frequency = 58000,
+            code = "",
+            color = Color.White.toArgb(),
+        ),
+        RCAction(
+            title = "aloo8",
+            frequency = 58000,
+            code = "",
+            color = Color.White.toArgb(),
+        ),
+    )
+
+    val draggedItemIndex = remember { mutableStateOf<Int?>(null) }
+
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+
+            },
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+                ) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add action")
+            }
+        }
+    ) {
+        Box(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                itemsIndexed(testData) { index, action ->
+                    DefaultButton(
+                        rcAction = action,
+                        modifier = Modifier
+                            .pointerInput(Unit) {
+                                detectDragGestures(
+                                    onDragStart = {
+                                        draggedItemIndex.value = index;
+                                    },
+                                    onDragEnd = {
+                                        draggedItemIndex.value = null
+                                    },
+                                    onDragCancel = {
+                                        draggedItemIndex.value = null
+                                    },
+                                    onDrag = { change, dragAmount ->
+                                        change.consume()
+                                        val draggedIndex = draggedItemIndex.value ?: return@detectDragGestures
+                                        val targetIndex = testData.indexOfFirst {
+                                            it.id == draggedItemIndex.value
+                                        } + if(dragAmount.y > 0) 1 else -1
+                                        if(targetIndex in testData.indices) {
+                                            testData.move(draggedIndex, targetIndex)
+                                        }
+                                    }
+                                )
+                            }
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun <E> MutableList<E>.move(fromIndex: Int, toIndex: Int) {
+    if (fromIndex < toIndex) {
+        for (i in fromIndex until toIndex) {
+            Collections.swap(this, i, i + 1)
+        }
+    } else {
+        for (i in fromIndex downTo toIndex + 1) {
+            Collections.swap(this, i, i - 1)
+        }
+    }
+}
