@@ -1,4 +1,4 @@
-package com.sayna.remotecontrol.feature_rc_action.presentation.remote
+package com.sayna.remotecontrol.feature_rc_action.presentation
 
 import com.sayna.remotecontrol.feature_rc_action.domain.model.RCAction
 import com.sayna.remotecontrol.feature_rc_action.domain.util.OrderType

@@ -47,6 +47,8 @@ fun EditRemoteScreen(
     viewModel: EditRemoteViewModel = hiltViewModel(),
     navController: NavController
 ) {
+    val state = viewModel.state.value
+
     var testData: MutableList<RCAction> = mutableListOf(
         RCAction(
             title = "aloo5",
@@ -101,7 +103,7 @@ fun EditRemoteScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     ->
-                    itemsIndexed(testData) { index, action ->
+                    itemsIndexed(state.rcActions) { index, action ->
                         DefaultButton(
                             rcAction = action,
                             modifier = Modifier
