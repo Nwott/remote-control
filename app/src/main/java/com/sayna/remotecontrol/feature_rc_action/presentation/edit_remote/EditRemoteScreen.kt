@@ -5,6 +5,7 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -16,6 +17,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,12 +25,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sayna.remotecontrol.feature_rc_action.domain.model.RCAction
 import com.sayna.remotecontrol.feature_rc_action.presentation.components.DefaultButton
+import com.sayna.remotecontrol.feature_rc_action.presentation.components.DefaultHeader
 import com.sayna.remotecontrol.feature_rc_action.presentation.remote.RemoteViewModel
+import com.sayna.remotecontrol.ui.theme.Purple40
+import com.sayna.remotecontrol.ui.theme.PurpleGrey40
+import com.sayna.remotecontrol.ui.theme.PurpleGrey80
 import java.util.Collections
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -79,39 +87,46 @@ fun EditRemoteScreen(
         Box(
             modifier = Modifier.padding(16.dp)
         ) {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            Column(
+
             ) {
-                itemsIndexed(testData) { index, action ->
-                    DefaultButton(
-                        rcAction = action,
-                        modifier = Modifier
-                            .pointerInput(Unit) {
-                                detectDragGestures(
-                                    onDragStart = {
-                                        draggedItemIndex.value = index;
-                                    },
-                                    onDragEnd = {
-                                        draggedItemIndex.value = null
-                                    },
-                                    onDragCancel = {
-                                        draggedItemIndex.value = null
-                                    },
-                                    onDrag = { change, dragAmount ->
-                                        change.consume()
-                                        val draggedIndex = draggedItemIndex.value ?: return@detectDragGestures
-                                        val targetIndex = testData.indexOfFirst {
-                                            it.id == draggedItemIndex.value
-                                        } + if(dragAmount.y > 0) 1 else -1
-                                        if(targetIndex in testData.indices) {
-                                            testData.move(draggedIndex, targetIndex)
+                DefaultHeader(text = "Edit Remote")
+                
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(3),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    ->
+                    itemsIndexed(testData) { index, action ->
+                        DefaultButton(
+                            rcAction = action,
+                            modifier = Modifier
+                                .pointerInput(Unit) {
+                                    detectDragGestures(
+                                        onDragStart = {
+                                            draggedItemIndex.value = index;
+                                        },
+                                        onDragEnd = {
+                                            draggedItemIndex.value = null
+                                        },
+                                        onDragCancel = {
+                                            draggedItemIndex.value = null
+                                        },
+                                        onDrag = { change, dragAmount ->
+                                            change.consume()
+                                            val draggedIndex = draggedItemIndex.value ?: return@detectDragGestures
+                                            val targetIndex = testData.indexOfFirst {
+                                                it.id == draggedItemIndex.value
+                                            } + if(dragAmount.y > 0) 1 else -1
+                                            if(targetIndex in testData.indices) {
+                                                testData.move(draggedIndex, targetIndex)
+                                            }
                                         }
-                                    }
-                                )
-                            }
-                    )
+                                    )
+                                }
+                        )
+                    }
                 }
             }
         }

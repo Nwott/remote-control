@@ -2,6 +2,7 @@ package com.sayna.remotecontrol.feature_rc_action.presentation.remote
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -18,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sayna.remotecontrol.feature_rc_action.domain.model.RCAction
 import com.sayna.remotecontrol.feature_rc_action.presentation.components.DefaultButton
+import com.sayna.remotecontrol.feature_rc_action.presentation.components.DefaultHeader
 
 @Composable
 fun RemoteScreen(
@@ -55,17 +57,21 @@ fun RemoteScreen(
     Box(
         modifier = Modifier.padding(16.dp)
     ) {
-        // grid that has buttons for each RC action
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(testData) {rcAction ->
-                DefaultButton(
-                    rcAction = rcAction,
-                    onClick = { viewModel.OnEvent(RemoteEvent.PerformRCAction(rcAction)) }
-                )
+        Column {
+            DefaultHeader(text = "Remote")
+
+            // grid that has buttons for each RC action
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(testData) {rcAction ->
+                    DefaultButton(
+                        rcAction = rcAction,
+                        onClick = { viewModel.OnEvent(RemoteEvent.PerformRCAction(rcAction)) }
+                    )
+                }
             }
         }
     }
