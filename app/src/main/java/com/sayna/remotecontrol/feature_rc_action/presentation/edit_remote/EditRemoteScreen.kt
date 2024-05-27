@@ -30,10 +30,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.sayna.remotecontrol.feature_rc_action.domain.model.RCAction
 import com.sayna.remotecontrol.feature_rc_action.presentation.components.DefaultButton
 import com.sayna.remotecontrol.feature_rc_action.presentation.components.DefaultHeader
 import com.sayna.remotecontrol.feature_rc_action.presentation.remote.RemoteViewModel
+import com.sayna.remotecontrol.feature_rc_action.presentation.util.Screen
 import com.sayna.remotecontrol.ui.theme.Purple40
 import com.sayna.remotecontrol.ui.theme.PurpleGrey40
 import com.sayna.remotecontrol.ui.theme.PurpleGrey80
@@ -42,7 +44,8 @@ import java.util.Collections
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun EditRemoteScreen(
-    viewModel: EditRemoteViewModel = hiltViewModel()
+    viewModel: EditRemoteViewModel = hiltViewModel(),
+    navController: NavController
 ) {
     var testData: MutableList<RCAction> = mutableListOf(
         RCAction(
@@ -76,7 +79,7 @@ fun EditRemoteScreen(
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = {
-
+                navController.navigate(Screen.AddRCActionScreen.route)
             },
                 containerColor = MaterialTheme.colorScheme.primaryContainer
                 ) {

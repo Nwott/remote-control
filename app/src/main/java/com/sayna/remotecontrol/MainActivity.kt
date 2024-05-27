@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.sayna.remotecontrol.feature_rc_action.presentation.add_rcaction.AddRCActionScreen
 import com.sayna.remotecontrol.feature_rc_action.presentation.edit_remote.EditRemoteScreen
 import com.sayna.remotecontrol.feature_rc_action.presentation.remote.RemoteScreen
 import com.sayna.remotecontrol.feature_rc_action.presentation.util.Screen
@@ -146,7 +147,10 @@ class MainActivity : ComponentActivity() {
                                 RemoteScreen()
                             }
                             composable(route = Screen.EditRemoteScreen.route) {
-                                EditRemoteScreen()
+                                EditRemoteScreen(navController = navController)
+                            }
+                            composable(route = Screen.AddRCActionScreen.route) {
+                                AddRCActionScreen(navController = navController)
                             }
                         }
                     }

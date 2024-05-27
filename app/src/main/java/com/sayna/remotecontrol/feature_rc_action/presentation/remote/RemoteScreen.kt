@@ -66,7 +66,7 @@ fun RemoteScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(testData) {rcAction ->
+                items(state.rcActions) {rcAction ->
                     DefaultButton(
                         rcAction = rcAction,
                         onClick = { viewModel.OnEvent(RemoteEvent.PerformRCAction(rcAction)) }
