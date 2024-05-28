@@ -1,5 +1,6 @@
 package com.sayna.remotecontrol.feature_rc_action.presentation.components
 
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -42,7 +43,7 @@ fun DefaultButton(
     description: String = "Button description",
     textStyle: TextStyle = TextStyle(),
     icon: ImageVector? = null,
-    onClick: () -> Unit = {},
+    onClick: @Composable () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val btnText: String = rcAction?.title ?: "No title"

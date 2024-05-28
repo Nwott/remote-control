@@ -18,9 +18,9 @@ class AddRCActionViewModel @Inject constructor(
 
     private var currentNoteId: Int? = null
 
-    fun onEvent(event: AddRCActionEvent) {
+    fun onEvent(event: AddEditRCActionEvent) {
         when(event) {
-            is AddRCActionEvent.SaveRCAction -> {
+            is AddEditRCActionEvent.SaveRCAction -> {
                 viewModelScope.launch {
                     try {
                         rcActionUseCases.addRCActionUseCase(

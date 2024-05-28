@@ -34,6 +34,7 @@ import androidx.navigation.NavController
 import com.sayna.remotecontrol.feature_rc_action.domain.model.RCAction
 import com.sayna.remotecontrol.feature_rc_action.presentation.components.DefaultButton
 import com.sayna.remotecontrol.feature_rc_action.presentation.components.DefaultHeader
+import com.sayna.remotecontrol.feature_rc_action.presentation.edit_remote.components.EditOptionsDialog
 import com.sayna.remotecontrol.feature_rc_action.presentation.remote.RemoteViewModel
 import com.sayna.remotecontrol.feature_rc_action.presentation.util.Screen
 import com.sayna.remotecontrol.ui.theme.Purple40
@@ -76,8 +77,6 @@ fun EditRemoteScreen(
         ),
     )
 
-    val draggedItemIndex = remember { mutableStateOf<Int?>(null) }
-
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = {
@@ -106,30 +105,9 @@ fun EditRemoteScreen(
                     itemsIndexed(state.rcActions) { index, action ->
                         DefaultButton(
                             rcAction = action,
-                            modifier = Modifier
-                                .pointerInput(Unit) {
-                                    detectDragGestures(
-                                        onDragStart = {
-                                            draggedItemIndex.value = index;
-                                        },
-                                        onDragEnd = {
-                                            draggedItemIndex.value = null
-                                        },
-                                        onDragCancel = {
-                                            draggedItemIndex.value = null
-                                        },
-                                        onDrag = { change, dragAmount ->
-                                            change.consume()
-                                            val draggedIndex = draggedItemIndex.value ?: return@detectDragGestures
-                                            val targetIndex = testData.indexOfFirst {
-                                                it.id == draggedItemIndex.value
-                                            } + if(dragAmount.y > 0) 1 else -1
-                                            if(targetIndex in testData.indices) {
-                                                testData.move(draggedIndex, targetIndex)
-                                            }
-                                        }
-                                    )
-                                }
+                            modifier = Modifier,
+                            onClick = {
+                            }
                         )
                     }
                 }
