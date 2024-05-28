@@ -32,9 +32,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.sayna.remotecontrol.feature_rc_action.presentation.add_rcaction.AddRCActionScreen
 import com.sayna.remotecontrol.feature_rc_action.presentation.edit_remote.EditRemoteScreen
 import com.sayna.remotecontrol.feature_rc_action.presentation.remote.RemoteScreen
@@ -149,8 +151,21 @@ class MainActivity : ComponentActivity() {
                             composable(route = Screen.EditRemoteScreen.route) {
                                 EditRemoteScreen(navController = navController)
                             }
-                            composable(route = Screen.AddRCActionScreen.route) {
-                                AddRCActionScreen(navController = navController)
+                            composable(
+                                route = Screen.AddRCActionScreen.route + "/{editing}",
+                                arguments = listOf(
+                                    navArgument("editing") {
+                                        type = NavType.BoolType
+                                        defaultValue = false
+                                        nullable = false
+                                    }
+                                )
+                            ) { entry ->
+                                entry.arguments?.getBoolean("editing")?.let { it1 ->
+                                    AddRCActionScreen(editing = it1,
+                                        navController = navController
+                                    )
+                                }
                             }
                         }
                     }

@@ -43,14 +43,14 @@ fun DefaultButton(
     description: String = "Button description",
     textStyle: TextStyle = TextStyle(),
     icon: ImageVector? = null,
-    onClick: @Composable () -> Unit = {},
+    onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val btnText: String = rcAction?.title ?: "No title"
     var buttonSize by remember { mutableStateOf(Size.Zero) }
 
     ElevatedButton(
-        onClick = { onClick },
+        onClick = { onClick() },
         modifier = modifier
             .onGloballyPositioned { coordinates ->
                 buttonSize = coordinates.size.toSize()

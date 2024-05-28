@@ -80,7 +80,7 @@ fun EditRemoteScreen(
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                navController.navigate(Screen.AddRCActionScreen.route)
+                navController.navigate(Screen.AddRCActionScreen.withArgs("false"))
             },
                 containerColor = MaterialTheme.colorScheme.primaryContainer
                 ) {
@@ -107,6 +107,7 @@ fun EditRemoteScreen(
                             rcAction = action,
                             modifier = Modifier,
                             onClick = {
+                                navController.navigate(Screen.AddRCActionScreen.withArgs("true"))
                             }
                         )
                     }

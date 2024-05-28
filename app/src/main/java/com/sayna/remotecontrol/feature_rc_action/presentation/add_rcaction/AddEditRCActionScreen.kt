@@ -32,6 +32,7 @@ import com.sayna.remotecontrol.feature_rc_action.presentation.util.Screen
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AddRCActionScreen(
+    editing: Boolean = false,
     viewModel: AddRCActionViewModel = hiltViewModel(),
     navController: NavController
 ) {
@@ -69,7 +70,14 @@ fun AddRCActionScreen(
             modifier = Modifier.padding(16.dp)
         ) {
             Column {
-                DefaultHeader(text = "Add Remote Control Action")
+                if(editing)
+                {
+                    DefaultHeader(text = "Edit Remote Control Action")
+                }
+                else
+                {
+                    DefaultHeader(text = "Add Remote Control Action")
+                }
 
                 OutlinedTextField(
                     value = title,
