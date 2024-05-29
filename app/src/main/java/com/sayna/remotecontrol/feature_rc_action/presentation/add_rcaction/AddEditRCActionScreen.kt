@@ -1,6 +1,7 @@
 package com.sayna.remotecontrol.feature_rc_action.presentation.add_rcaction
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -119,7 +120,12 @@ fun AddRCActionScreen(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Row(
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .clickable {
+                                navController.navigate(Screen.EditRemoteScreen.route)
+                                viewModel.onEvent(AddEditRCActionEvent.DeleteRCAction)
+                            }
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.Delete,

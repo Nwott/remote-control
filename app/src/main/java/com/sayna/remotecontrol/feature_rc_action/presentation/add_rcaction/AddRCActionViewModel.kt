@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sayna.remotecontrol.feature_rc_action.domain.model.InvalidRCActionException
 import com.sayna.remotecontrol.feature_rc_action.domain.model.RCAction
 import com.sayna.remotecontrol.feature_rc_action.domain.use_case.RCActionUseCases
@@ -74,6 +75,18 @@ class AddRCActionViewModel @Inject constructor(
                         _eventFlow.emit(UIEvent.SaveRCAction)
                     } catch(e: InvalidRCActionException) {
                         // TODO: print error message
+                    }
+                }
+            }
+            is AddEditRCActionEvent.DeleteRCAction -> {
+                viewModelScope.launch {
+                    if(currentRCActionId != -1 && currentRCActionId != null) {
+                        val action = rcActionUseCases.getRCActionUseCase(currentRCActionId!!)
+
+                        if(action != null) {
+                            rcActionUseCases.deleteRCActionUseCase(action)
+                        }
+
                     }
                 }
             }
