@@ -18,4 +18,6 @@ val BabyBlue = Color(0xff81deea)
 val Violet = Color(0xffcf94da)
 val LightGreen = Color(0xffe7ed9b)
 
+val Red = Color(255, 83, 83, 255)
+
 val LightGrey = Color(150, 66, 66, 255)

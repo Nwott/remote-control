@@ -7,6 +7,7 @@ import com.sayna.remotecontrol.feature_rc_action.data.repository.RCActionReposit
 import com.sayna.remotecontrol.feature_rc_action.domain.repository.RCActionRepository
 import com.sayna.remotecontrol.feature_rc_action.domain.use_case.AddRCActionUseCase
 import com.sayna.remotecontrol.feature_rc_action.domain.use_case.DeleteRCActionUseCase
+import com.sayna.remotecontrol.feature_rc_action.domain.use_case.GetRCActionUseCase
 import com.sayna.remotecontrol.feature_rc_action.domain.use_case.GetRCActionsUseCase
 import com.sayna.remotecontrol.feature_rc_action.domain.use_case.RCActionUseCases
 import dagger.Module
@@ -40,6 +41,7 @@ object AppModule {
     fun ProvideRCActionUseCases(repository: RCActionRepository): RCActionUseCases {
         return RCActionUseCases(
             getRCActionsUseCase = GetRCActionsUseCase(repository),
+            getRCActionUseCase = GetRCActionUseCase(repository),
             deleteRCActionUseCase = DeleteRCActionUseCase(repository),
             addRCActionUseCase = AddRCActionUseCase(repository)
         )
