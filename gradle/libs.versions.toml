@@ -31,4 +31,3 @@ androidx-ui-desktop = { group = "androidx.compose.ui", name = "ui-desktop", vers
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-

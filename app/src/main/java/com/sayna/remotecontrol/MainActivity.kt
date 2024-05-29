@@ -152,11 +152,16 @@ class MainActivity : ComponentActivity() {
                                 EditRemoteScreen(navController = navController)
                             }
                             composable(
-                                route = Screen.AddRCActionScreen.route + "/{editing}",
+                                route = Screen.AddRCActionScreen.route + "/{editing}/{rcActionId}",
                                 arguments = listOf(
                                     navArgument("editing") {
                                         type = NavType.BoolType
                                         defaultValue = false
+                                        nullable = false
+                                    },
+                                    navArgument("rcActionId") {
+                                        type = NavType.IntType
+                                        defaultValue = -1
                                         nullable = false
                                     }
                                 )

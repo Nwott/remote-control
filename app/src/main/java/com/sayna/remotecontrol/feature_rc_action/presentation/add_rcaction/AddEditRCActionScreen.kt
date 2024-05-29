@@ -44,9 +44,9 @@ fun AddRCActionScreen(
     viewModel: AddRCActionViewModel = hiltViewModel(),
     navController: NavController
 ) {
-    var title by remember { mutableStateOf("") }
-    var frequency by remember { mutableStateOf("") }
-    var code by remember { mutableStateOf("") }
+    var title by remember { mutableStateOf(viewModel.rcActionTitle.value) }
+    var frequency by remember { mutableStateOf(viewModel.rcActionFrequency.value.toString()) }
+    var code by remember { mutableStateOf(viewModel.rcActionCode.value) }
 
     Scaffold(
         floatingActionButton = {
@@ -88,7 +88,7 @@ fun AddRCActionScreen(
                 }
 
                 OutlinedTextField(
-                    value = title,
+                    value = viewModel.rcActionTitle.value,
                     onValueChange = { title = it },
                     label = { Text("Title") },
                     modifier = Modifier.fillMaxWidth()
@@ -97,7 +97,7 @@ fun AddRCActionScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedTextField(
-                    value = frequency,
+                    value = viewModel.rcActionFrequency.value.toString(),
                     onValueChange = { frequency = it },
                     label = { Text("Frequency") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -107,7 +107,7 @@ fun AddRCActionScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedTextField(
-                    value = code,
+                    value = viewModel.rcActionCode.value,
                     onValueChange = { code = it },
                     label = { Text("code") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
