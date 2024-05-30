@@ -40,6 +40,7 @@ class RemoteViewModel @Inject constructor(
                     EmitIR(event.rcAction, ParseIRCode(event.rcAction))
                 }
                 else {
+                    println("error something")
                     // TODO: output error message
                 }
             }
@@ -80,6 +81,7 @@ class RemoteViewModel @Inject constructor(
 
     /* emits the ir code */
     private fun EmitIR(rcAction: RCAction, pattern: IntArray) {
+        println("code: " + pattern.toString())
         irManager.transmit(rcAction.frequency, pattern)
     }
 }

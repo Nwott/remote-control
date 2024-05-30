@@ -20,6 +20,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,9 +46,15 @@ fun AddRCActionScreen(
     viewModel: AddRCActionViewModel = hiltViewModel(),
     navController: NavController
 ) {
-    var title by remember { mutableStateOf(viewModel.rcActionTitle.value) }
-    var frequency by remember { mutableStateOf(viewModel.rcActionFrequency.value.toString()) }
-    var code by remember { mutableStateOf(viewModel.rcActionCode.value) }
+    var title by remember  { mutableStateOf("") }
+    var frequency by remember { mutableStateOf("0") }
+    var code by remember { mutableStateOf("0") }
+
+    if(editing) {
+        title = viewModel.rcActionTitle.value
+        frequency = viewModel.rcActionFrequency.value.toString()
+        code = viewModel.rcActionCode.value
+    }
 
     Scaffold(
         floatingActionButton = {
@@ -89,7 +96,7 @@ fun AddRCActionScreen(
                 }
 
                 OutlinedTextField(
-                    value = viewModel.rcActionTitle.value,
+                    value = title,
                     onValueChange = { title = it },
                     label = { Text("Title") },
                     modifier = Modifier.fillMaxWidth()
@@ -98,7 +105,7 @@ fun AddRCActionScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedTextField(
-                    value = viewModel.rcActionFrequency.value.toString(),
+                    value = frequency,
                     onValueChange = { frequency = it },
                     label = { Text("Frequency") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -108,7 +115,7 @@ fun AddRCActionScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedTextField(
-                    value = viewModel.rcActionCode.value,
+                    value = code,
                     onValueChange = { code = it },
                     label = { Text("code") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
