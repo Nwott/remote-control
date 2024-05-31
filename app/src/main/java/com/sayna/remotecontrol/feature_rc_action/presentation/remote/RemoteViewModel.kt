@@ -28,7 +28,7 @@ class RemoteViewModel @Inject constructor(
     private var getRCActionsJob: Job? = null
 
     init {
-        GetRCActions(RCActionOrder.ID(OrderType.Descending))
+        GetRCActions(RCActionOrder.ID(OrderType.Ascending))
     }
 
     fun OnEvent(event: RemoteEvent) {
