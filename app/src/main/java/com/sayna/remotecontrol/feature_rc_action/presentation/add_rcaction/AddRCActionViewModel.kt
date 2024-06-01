@@ -1,19 +1,27 @@
 package com.sayna.remotecontrol.feature_rc_action.presentation.add_rcaction
 
+import android.app.Notification.Action
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.toArgb
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sayna.remotecontrol.feature_rc_action.domain.model.InvalidRCActionException
 import com.sayna.remotecontrol.feature_rc_action.domain.model.RCAction
 import com.sayna.remotecontrol.feature_rc_action.domain.use_case.RCActionUseCases
+import com.sayna.remotecontrol.feature_rc_action.presentation.add_rcaction.util.AddEditRCActionIntent
 import com.sayna.remotecontrol.ui.theme.Purple40
 import com.sayna.remotecontrol.ui.theme.RedPink
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,7 +31,7 @@ class AddRCActionViewModel @Inject constructor(
     private val rcActionUseCases: RCActionUseCases,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
-
+    // states of rc action data
     private val _rcActionTitle = mutableStateOf("")
     val rcActionTitle: State<String> = _rcActionTitle
 
@@ -88,6 +96,18 @@ class AddRCActionViewModel @Inject constructor(
                         }
 
                     }
+                }
+            }
+            is AddEditRCActionEvent.ImportRCActions -> {
+                viewModelScope.launch {
+                    // prompt user to import file
+                    val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+                    intent.addCategory(Intent.CATEGORY_OPENABLE)
+                    intent.type = "text/plain"
+
+                    // parse file and create rcActions
+
+                    // add rcActions
                 }
             }
         }

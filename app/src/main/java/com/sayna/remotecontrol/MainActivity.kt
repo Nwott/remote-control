@@ -1,10 +1,15 @@
 package com.sayna.remotecontrol
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -32,17 +37,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.sayna.remotecontrol.feature_rc_action.presentation.add_rcaction.AddRCActionScreen
+import com.sayna.remotecontrol.feature_rc_action.presentation.add_rcaction.AddRCActionViewModel
+import com.sayna.remotecontrol.feature_rc_action.presentation.add_rcaction.util.AddEditRCActionIntent
 import com.sayna.remotecontrol.feature_rc_action.presentation.edit_remote.EditRemoteScreen
 import com.sayna.remotecontrol.feature_rc_action.presentation.remote.RemoteScreen
 import com.sayna.remotecontrol.feature_rc_action.presentation.util.Screen
 import com.sayna.remotecontrol.ui.theme.RemoteControlTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 data class BottomNavigationItem(
     val title: String,
@@ -55,11 +66,19 @@ data class BottomNavigationItem(
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private lateinit var addRCActionViewModel: AddRCActionViewModel
+
+    private val filePicker = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if(result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            val selectedFileUri = data?.data
+        }
+    }
+
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         enableEdgeToEdge()
         setContent {
             RemoteControlTheme {
@@ -178,5 +197,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
     }
 }

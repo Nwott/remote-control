@@ -1,6 +1,9 @@
 package com.sayna.remotecontrol.feature_rc_action.presentation.add_rcaction
 
 import android.annotation.SuppressLint
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +21,7 @@ import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -33,14 +37,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.sayna.remotecontrol.feature_rc_action.presentation.components.DefaultButton
 import com.sayna.remotecontrol.feature_rc_action.presentation.components.DefaultHeader
+import com.sayna.remotecontrol.feature_rc_action.presentation.components.DefaultOutlinedButton
 import com.sayna.remotecontrol.feature_rc_action.presentation.util.Screen
 import com.sayna.remotecontrol.ui.theme.Darker
 import com.sayna.remotecontrol.ui.theme.PrimaryPurple
@@ -56,6 +64,8 @@ fun AddRCActionScreen(
     viewModel: AddRCActionViewModel = hiltViewModel(),
     navController: NavController
 ) {
+    val context = LocalContext.current
+
     var title by remember  { mutableStateOf("") }
     var frequency by remember { mutableStateOf("0") }
     var code by remember { mutableStateOf("0") }
@@ -67,6 +77,13 @@ fun AddRCActionScreen(
     }
 
     var screen by remember { mutableStateOf("single") }
+    
+    // handles opening file explorer
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+         uri?.let {
+
+         }
+    }
 
     Scaffold(
         floatingActionButton = {
@@ -125,7 +142,10 @@ fun AddRCActionScreen(
                                 containerColor = if(screen == "single") Purple40 else Darker
                             )
                         ) {
-                            Text(text = "Single")
+                            Text(
+                                text = "Single",
+                                color = if(screen == "single") Color.White else Purple40
+                            )
                         }
 
                         Button(
@@ -135,7 +155,10 @@ fun AddRCActionScreen(
                                 containerColor = if(screen == "import") Purple40 else Darker
                             )
                         ) {
-                            Text(text = "Import")
+                            Text(
+                                text = "Import",
+                                color = if(screen == "import") Color.White else Purple40
+                            )
                         }
                     }
 
@@ -195,9 +218,24 @@ fun AddRCActionScreen(
                             }
                         }
                     }
-                    else if(screen == "importing")
+                    else if(screen == "import")
                     {
+                        Column {
+                            Spacer(modifier = Modifier.height(16.dp))
 
+                            ElevatedButton(
+                                onClick = {
+                                    launcher.launch("text/plain")
+                                },
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(
+                                    text = "Import From File",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
                     }
                 }
             }
