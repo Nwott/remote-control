@@ -1,29 +1,29 @@
 package com.sayna.remotecontrol.feature_rc_action.presentation.add_rcaction
 
-import android.app.Notification.Action
-import android.content.Intent
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.toArgb
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.core.net.toFile
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sayna.remotecontrol.feature_rc_action.domain.model.InvalidRCActionException
 import com.sayna.remotecontrol.feature_rc_action.domain.model.RCAction
 import com.sayna.remotecontrol.feature_rc_action.domain.use_case.RCActionUseCases
-import com.sayna.remotecontrol.feature_rc_action.presentation.add_rcaction.util.AddEditRCActionIntent
 import com.sayna.remotecontrol.ui.theme.Purple40
 import com.sayna.remotecontrol.ui.theme.RedPink
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.BufferedReader
+import java.io.FileInputStream
+import java.io.FileNotFoundException
+import java.io.IOException
+import java.io.InputStreamReader
 import javax.inject.Inject
 
 @HiltViewModel
@@ -100,17 +100,65 @@ class AddRCActionViewModel @Inject constructor(
             }
             is AddEditRCActionEvent.ImportRCActions -> {
                 viewModelScope.launch {
-                    // prompt user to import file
-                    val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-                    intent.addCategory(Intent.CATEGORY_OPENABLE)
-                    intent.type = "text/plain"
-
                     // parse file and create rcActions
-
-                    // add rcActions
+                    ParseFile(event.uri)
                 }
             }
         }
+    }
+
+    private suspend fun ParseFile(uri: Uri) {
+        try {
+            val file = uri.toFile()
+            val fileIn = withContext(Dispatchers.IO) {
+                FileInputStream(file)
+            }
+            val reader = BufferedReader(InputStreamReader(fileIn))
+
+            // current rcAction
+            var title: String = ""
+            var frequency: Int = -1
+            var code: String = ""
+
+            // loops until we reach end of file
+            while(true)
+            {
+                val line = withContext(Dispatchers.IO) {
+                    reader.readLine()
+                }
+
+                // stopping condition
+                if(line.equals("EOF")) {
+                    break
+                }
+
+                title = line
+
+                frequency = withContext(Dispatchers.IO) {
+                    reader.readLine()
+                }.toInt()
+
+                code = withContext(Dispatchers.IO) {
+                    reader.readLine()
+                }
+
+                rcActionUseCases.addRCActionUseCase(
+                    rcAction = RCAction(
+                        title = title,
+                        frequency = frequency,
+                        code = code,
+                        color = Purple40.toArgb()
+                    )
+                )
+            }
+        }
+        catch(e: FileNotFoundException) {
+            println("Cannot find file")
+        }
+        catch(e: IOException) {
+            println("IO Exception")
+        }
+
     }
 
     sealed class UIEvent {

@@ -81,7 +81,7 @@ fun AddRCActionScreen(
     // handles opening file explorer
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
          uri?.let {
-
+            viewModel.onEvent(AddEditRCActionEvent.ImportRCActions(uri))
          }
     }
 
