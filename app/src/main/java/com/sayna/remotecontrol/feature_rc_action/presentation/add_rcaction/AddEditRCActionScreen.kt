@@ -2,6 +2,7 @@ package com.sayna.remotecontrol.feature_rc_action.presentation.add_rcaction
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import android.provider.DocumentsContract
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -81,8 +82,19 @@ fun AddRCActionScreen(
     // handles opening file explorer
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
          uri?.let {
-            viewModel.onEvent(AddEditRCActionEvent.ImportRCActions(uri))
+             val inputStream = context.contentResolver.openInputStream(uri)
+             viewModel.onEvent(AddEditRCActionEvent.ImportRCActions(inputStream))
+             inputStream?.close()
          }
+    }
+
+    // handles saving file
+
+    val saveLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            viewModel.onEvent(AddEditRCActionEvent.ExportRCActions(uri.path))
+        }
+        
     }
 
     Scaffold(
@@ -230,7 +242,22 @@ fun AddRCActionScreen(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
                                 Text(
-                                    text = "Import From File",
+                                    text = "Import from File",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            ElevatedButton(
+                                onClick = {
+                                    saveLauncher.launch("text/plain")
+                                },
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(
+                                    text = "Export to File",
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold
                                 )

@@ -90,4 +90,10 @@ dependencies {
 
     // kotlin extensions and couroutines support for room
     implementation("androidx.room:room-ktx:2.6.1")
+
+    // saving and importing
+    implementation("com.google.code.gson:gson:2.11.0")
+
+    // permissions
+    implementation("com.google.accompanist:accompanist-permissions:0.35.1-alpha")
 }

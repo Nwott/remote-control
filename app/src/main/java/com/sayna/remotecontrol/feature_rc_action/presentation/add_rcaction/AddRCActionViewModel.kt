@@ -8,22 +8,32 @@ import androidx.core.net.toFile
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.sayna.remotecontrol.feature_rc_action.domain.model.InvalidRCActionException
 import com.sayna.remotecontrol.feature_rc_action.domain.model.RCAction
 import com.sayna.remotecontrol.feature_rc_action.domain.use_case.RCActionUseCases
+import com.sayna.remotecontrol.feature_rc_action.domain.util.OrderType
+import com.sayna.remotecontrol.feature_rc_action.domain.util.RCActionOrder
+import com.sayna.remotecontrol.feature_rc_action.presentation.RCActionState
 import com.sayna.remotecontrol.ui.theme.Purple40
 import com.sayna.remotecontrol.ui.theme.RedPink
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
-import java.io.FileInputStream
+import java.io.File
 import java.io.FileNotFoundException
+import java.io.FileWriter
 import java.io.IOException
+import java.io.InputStream
 import java.io.InputStreamReader
+import java.net.URI
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,6 +42,9 @@ class AddRCActionViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
     // states of rc action data
+    private val _state = mutableStateOf(RCActionState())
+    val state: State<RCActionState> = _state
+
     private val _rcActionTitle = mutableStateOf("")
     val rcActionTitle: State<String> = _rcActionTitle
 
@@ -49,6 +62,8 @@ class AddRCActionViewModel @Inject constructor(
     private val _eventFlow = MutableSharedFlow<UIEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
+    private var getRCActionsJob: Job? = null
+
     init {
         savedStateHandle.get<Int>("rcActionId")?.let { rcActionId->
             if(rcActionId != -1) {
@@ -64,6 +79,8 @@ class AddRCActionViewModel @Inject constructor(
             }
 
         }
+
+        GetRCActions(RCActionOrder.ID(OrderType.Ascending))
     }
 
     fun onEvent(event: AddEditRCActionEvent) {
@@ -101,17 +118,25 @@ class AddRCActionViewModel @Inject constructor(
             is AddEditRCActionEvent.ImportRCActions -> {
                 viewModelScope.launch {
                     // parse file and create rcActions
-                    ParseFile(event.uri)
+                    if(event.inputStream != null) {
+                        ParseFile(event.inputStream)
+                    }
+                }
+            }
+            is AddEditRCActionEvent.ExportRCActions -> {
+                viewModelScope.launch {
+                    if(event.filepath != null) {
+                        WriteFile(event.filepath)
+                    }
                 }
             }
         }
     }
 
-    private suspend fun ParseFile(uri: Uri) {
+    private suspend fun ParseFile(inputStream: InputStream) {
         try {
-            val file = uri.toFile()
             val fileIn = withContext(Dispatchers.IO) {
-                FileInputStream(file)
+                inputStream
             }
             val reader = BufferedReader(InputStreamReader(fileIn))
 
@@ -128,7 +153,9 @@ class AddRCActionViewModel @Inject constructor(
                 }
 
                 // stopping condition
-                if(line.equals("EOF")) {
+                if(withContext(Dispatchers.IO) {
+                        reader.readLine()
+                    }.equals("EOF")) {
                     break
                 }
 
@@ -158,7 +185,37 @@ class AddRCActionViewModel @Inject constructor(
         catch(e: IOException) {
             println("IO Exception")
         }
+    }
 
+    private suspend fun WriteFile(filepath: String) {
+        try {
+            val gson = Gson()
+            val modifiedFilePath = filepath.replace(":", "/")
+            println("Path: " + modifiedFilePath)
+
+            // get rcActions
+            val actions = rcActionUseCases.getRCActionsUseCase(RCActionOrder.ID(OrderType.Descending))
+
+            val fw = withContext(Dispatchers.IO) {
+                FileWriter("/storage/emulated/0/RemoteControlExport/save.txt")
+            }
+            gson.toJson(actions, fw)
+        }
+        catch(e: IOException) {
+            println("IO Exception: " + e.stackTraceToString())
+        }
+    }
+
+    private fun GetRCActions(rcActionOrder: RCActionOrder) {
+        getRCActionsJob?.cancel()
+        rcActionUseCases.getRCActionsUseCase(rcActionOrder)
+            .onEach { rcActions ->
+                _state.value = state.value.copy(
+                    rcActions = rcActions,
+                    rcActionOrder = rcActionOrder
+                )
+            }
+            .launchIn(viewModelScope)
     }
 
     sealed class UIEvent {
