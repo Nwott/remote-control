@@ -47,6 +47,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toFile
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -61,6 +62,7 @@ import com.sayna.remotecontrol.ui.theme.PrimaryPurple
 import com.sayna.remotecontrol.ui.theme.Purple40
 import com.sayna.remotecontrol.ui.theme.Red
 import com.sayna.remotecontrol.ui.theme.SelectedPurple
+import java.io.File
 
 @OptIn(ExperimentalPermissionsApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -89,9 +91,11 @@ fun AddRCActionScreen(
     // handles opening file explorer
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
          uri?.let {
-             val inputStream = context.contentResolver.openInputStream(uri)
-             viewModel.onEvent(AddEditRCActionEvent.ImportRCActions(inputStream))
-             inputStream?.close()
+            val inputStream = context.contentResolver.openInputStream(uri)
+
+             inputStream?.let {
+                 viewModel.onEvent(AddEditRCActionEvent.ImportRCActions(inputStream))
+             }
          }
     }
     // permissions

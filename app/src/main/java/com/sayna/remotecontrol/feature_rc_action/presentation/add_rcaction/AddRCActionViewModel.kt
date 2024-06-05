@@ -7,6 +7,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import com.google.gson.Strictness
+import com.google.gson.reflect.TypeToken
+import com.google.gson.stream.JsonReader
 import com.sayna.remotecontrol.feature_rc_action.domain.model.InvalidRCActionException
 import com.sayna.remotecontrol.feature_rc_action.domain.model.RCAction
 import com.sayna.remotecontrol.feature_rc_action.domain.use_case.RCActionUseCases
@@ -31,6 +34,9 @@ import java.io.FileWriter
 import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
+import java.io.StringReader
+import java.lang.reflect.Type
+import java.nio.file.Files
 import javax.inject.Inject
 
 @HiltViewModel
@@ -130,50 +136,23 @@ class AddRCActionViewModel @Inject constructor(
         }
     }
 
-    private suspend fun ParseFile(inputStream: InputStream) {
+    private fun ParseFile(inputStream: InputStream) {
         try {
-            val fileIn = withContext(Dispatchers.IO) {
-                inputStream
-            }
-            val reader = BufferedReader(InputStreamReader(fileIn))
+            val gson = Gson()
+            val content = inputStream.bufferedReader().use { it.readText() }
 
-            // current rcAction
-            var title: String = ""
-            var frequency: Int = -1
-            var code: String = ""
+            val listType = object : TypeToken<ArrayList<RCAction>>(){}.type
 
-            // loops until we reach end of file
-            while(true)
-            {
-                val line = withContext(Dispatchers.IO) {
-                    reader.readLine()
-                }
+            val rcActions : List<RCAction> = gson.fromJson(content, listType)
 
-                // stopping condition
-                if(withContext(Dispatchers.IO) {
-                        reader.readLine()
-                    }.equals("EOF")) {
-                    break
-                }
-
-                title = line
-
-                frequency = withContext(Dispatchers.IO) {
-                    reader.readLine()
-                }.toInt()
-
-                code = withContext(Dispatchers.IO) {
-                    reader.readLine()
-                }
-
-                rcActionUseCases.addRCActionUseCase(
-                    rcAction = RCAction(
-                        title = title,
-                        frequency = frequency,
-                        code = code,
-                        color = Purple40.toArgb()
-                    )
-                )
+            rcActions.forEach {
+                action ->
+                this.onEvent(AddEditRCActionEvent.SaveRCAction(
+                    title = action.title,
+                    frequency = action.frequency,
+                    code = action.code
+                ))
+                println("Action: " + action.title)
             }
         }
         catch(e: FileNotFoundException) {
@@ -195,7 +174,7 @@ class AddRCActionViewModel @Inject constructor(
 
             withContext(Dispatchers.IO) {
                 fw.flush()
-                fw.write(gson.toJson(state.value))
+                fw.write(gson.toJson(state.value.rcActions))
                 fw.close()
             }
         }
