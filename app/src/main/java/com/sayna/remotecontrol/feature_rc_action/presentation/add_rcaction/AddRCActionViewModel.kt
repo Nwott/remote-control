@@ -1,10 +1,8 @@
 package com.sayna.remotecontrol.feature_rc_action.presentation.add_rcaction
 
-import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.toArgb
-import androidx.core.net.toFile
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -33,7 +31,6 @@ import java.io.FileWriter
 import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
-import java.net.URI
 import javax.inject.Inject
 
 @HiltViewModel
@@ -125,8 +122,8 @@ class AddRCActionViewModel @Inject constructor(
             }
             is AddEditRCActionEvent.ExportRCActions -> {
                 viewModelScope.launch {
-                    if(event.filepath != null) {
-                        WriteFile(event.filepath)
+                    if(event.fileDir != null) {
+                        WriteFile(event.fileDir)
                     }
                 }
             }
@@ -187,19 +184,20 @@ class AddRCActionViewModel @Inject constructor(
         }
     }
 
-    private suspend fun WriteFile(filepath: String) {
+    private suspend fun WriteFile(filesDir: File) {
         try {
             val gson = Gson()
-            val modifiedFilePath = filepath.replace(":", "/")
-            println("Path: " + modifiedFilePath)
-
-            // get rcActions
-            val actions = rcActionUseCases.getRCActionsUseCase(RCActionOrder.ID(OrderType.Descending))
+            val file = File(filesDir, "save.txt")
 
             val fw = withContext(Dispatchers.IO) {
-                FileWriter("/storage/emulated/0/RemoteControlExport/save.txt")
+                FileWriter(file)
             }
-            gson.toJson(actions, fw)
+
+            withContext(Dispatchers.IO) {
+                fw.flush()
+                fw.write(gson.toJson(state.value))
+                fw.close()
+            }
         }
         catch(e: IOException) {
             println("IO Exception: " + e.stackTraceToString())

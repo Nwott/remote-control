@@ -1,8 +1,10 @@
 package com.sayna.remotecontrol.feature_rc_action.presentation.add_rcaction
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.provider.DocumentsContract
+import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -47,6 +49,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import com.sayna.remotecontrol.feature_rc_action.presentation.components.DefaultButton
 import com.sayna.remotecontrol.feature_rc_action.presentation.components.DefaultHeader
 import com.sayna.remotecontrol.feature_rc_action.presentation.components.DefaultOutlinedButton
@@ -57,6 +62,7 @@ import com.sayna.remotecontrol.ui.theme.Purple40
 import com.sayna.remotecontrol.ui.theme.Red
 import com.sayna.remotecontrol.ui.theme.SelectedPurple
 
+@OptIn(ExperimentalPermissionsApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AddRCActionScreen(
@@ -65,6 +71,7 @@ fun AddRCActionScreen(
     viewModel: AddRCActionViewModel = hiltViewModel(),
     navController: NavController
 ) {
+
     val context = LocalContext.current
 
     var title by remember  { mutableStateOf("") }
@@ -87,14 +94,15 @@ fun AddRCActionScreen(
              inputStream?.close()
          }
     }
+    // permissions
+    val writePermissionState = rememberPermissionState(permission = Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    val readPermissionState = rememberPermissionState(permission = Manifest.permission.READ_EXTERNAL_STORAGE)
 
-    // handles saving file
-
-    val saveLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        uri?.let {
-            viewModel.onEvent(AddEditRCActionEvent.ExportRCActions(uri.path))
+    val requestPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if(isGranted) {
         }
-        
     }
 
     Scaffold(
@@ -252,7 +260,18 @@ fun AddRCActionScreen(
 
                             ElevatedButton(
                                 onClick = {
-                                    saveLauncher.launch("text/plain")
+                                    // check if we have permission to write
+                                    if(!writePermissionState.status.isGranted) {
+                                        requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                    }
+
+                                    if(!readPermissionState.status.isGranted) {
+                                        requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                                    }
+
+                                    if(writePermissionState.status.isGranted && readPermissionState.status.isGranted) {
+                                        viewModel.onEvent(AddEditRCActionEvent.ExportRCActions(context.externalCacheDir))
+                                    }
                                 },
                                 modifier = Modifier.fillMaxWidth()
                             ) {
