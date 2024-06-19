@@ -1,5 +1,6 @@
 package com.sayna.remotecontrol.feature_rc_action.presentation.add_rcaction
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.toArgb
@@ -60,6 +61,9 @@ class AddRCActionViewModel @Inject constructor(
     private val _rcActionColor = mutableStateOf(RedPink.toArgb())
     val rcActionColor: State<Int> = _rcActionColor
 
+    private val _rcActionId: MutableState<Int?> = mutableStateOf(null)
+    val rcActionId: State<Int?> = _rcActionId
+
     private var currentRCActionId : Int? = null
 
     private val _eventFlow = MutableSharedFlow<UIEvent>()
@@ -77,6 +81,7 @@ class AddRCActionViewModel @Inject constructor(
                         _rcActionFrequency.value = rcAction.frequency
                         _rcActionCode.value = rcAction.code
                         _rcActionColor.value = rcAction.color
+                        _rcActionId.value = rcAction.id
                     }
                 }
             }
@@ -91,12 +96,31 @@ class AddRCActionViewModel @Inject constructor(
             is AddEditRCActionEvent.SaveRCAction -> {
                 viewModelScope.launch {
                     try {
+                        if(currentRCActionId != null) {
+                            // get old RCAction
+                            val oldAction = event.id?.let { rcActionUseCases.getRCActionUseCase(it) }
+
+                            // replace old RCAction
+                            if(oldAction != null) {
+                                rcActionUseCases.addRCActionUseCase(
+                                    RCAction(
+                                        title = oldAction.title,
+                                        frequency = oldAction.frequency,
+                                        code = oldAction.code,
+                                        color = oldAction.color,
+                                        id = currentRCActionId
+                                    )
+                                )
+                            }
+                        }
+
                         rcActionUseCases.addRCActionUseCase(
                             RCAction(
                                 title = event.title,
                                 frequency = event.frequency,
                                 code =  event.code,
-                                color = Purple40.toArgb()
+                                color = Purple40.toArgb(),
+                                id = event.id
                             )
                         )
 
@@ -150,7 +174,8 @@ class AddRCActionViewModel @Inject constructor(
                 this.onEvent(AddEditRCActionEvent.SaveRCAction(
                     title = action.title,
                     frequency = action.frequency,
-                    code = action.code
+                    code = action.code,
+                    id = action.id
                 ))
                 println("Action: " + action.title)
             }

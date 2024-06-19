@@ -35,6 +35,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.Observer
@@ -98,13 +99,6 @@ class MainActivity : ComponentActivity() {
                         unselectedIcon = Icons.Outlined.AppRegistration,
                         hasNews = false
                     ),
-                    BottomNavigationItem(
-                        title = "Settings",
-                        route = "",
-                        selectedIcon = Icons.Filled.Settings,
-                        unselectedIcon = Icons.Outlined.Settings,
-                        hasNews = false
-                    ),
                 )
 
                 var selectedItemIndex by rememberSaveable {
@@ -112,7 +106,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 Surface (
-                    color = MaterialTheme.colorScheme.background
+                    color = Color.White
                 ) {
                     val navController = rememberNavController()
 

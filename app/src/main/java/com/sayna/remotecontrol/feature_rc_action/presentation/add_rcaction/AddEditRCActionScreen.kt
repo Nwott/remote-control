@@ -79,11 +79,13 @@ fun AddRCActionScreen(
     var title by remember  { mutableStateOf("") }
     var frequency by remember { mutableStateOf("0") }
     var code by remember { mutableStateOf("0") }
+    var id by remember { mutableStateOf("-1") }
 
     if(editing) {
         title = viewModel.rcActionTitle.value
         frequency = viewModel.rcActionFrequency.value.toString()
         code = viewModel.rcActionCode.value
+        id = viewModel.rcActionId.value.toString()
     }
 
     var screen by remember { mutableStateOf("single") }
@@ -123,11 +125,21 @@ fun AddRCActionScreen(
 
                 }
 
-                viewModel.onEvent(AddEditRCActionEvent.SaveRCAction(
-                    title = title,
-                    frequency = intFreq,
-                    code = code
-                ))
+                if(!editing) {
+                    viewModel.onEvent(AddEditRCActionEvent.SaveRCAction(
+                        title = title,
+                        frequency = intFreq,
+                        code = code
+                    ))
+                }
+                else {
+                    viewModel.onEvent(AddEditRCActionEvent.SaveRCAction(
+                        title = title,
+                        frequency = intFreq,
+                        code = code,
+                        id = id.toInt()
+                    ))
+                }
             },
                 containerColor = MaterialTheme.colorScheme.primaryContainer
             ) {
@@ -180,7 +192,7 @@ fun AddRCActionScreen(
                             )
                         ) {
                             Text(
-                                text = "Import",
+                                text = "To/From File",
                                 color = if(screen == "import") Color.White else Purple40
                             )
                         }
@@ -210,7 +222,17 @@ fun AddRCActionScreen(
                         OutlinedTextField(
                             value = code,
                             onValueChange = { code = it },
-                            label = { Text("code") },
+                            label = { Text("Code") },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        OutlinedTextField(
+                            value = id,
+                            onValueChange = { id = it },
+                            label = { Text("Id") },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.fillMaxWidth()
                         )

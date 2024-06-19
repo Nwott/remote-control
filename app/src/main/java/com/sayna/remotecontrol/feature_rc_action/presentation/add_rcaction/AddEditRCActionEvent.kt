@@ -8,7 +8,7 @@ import java.io.InputStream
 import java.io.OutputStream
 
 sealed class AddEditRCActionEvent {
-    data class SaveRCAction(val title: String, val frequency: Int, val code: String): AddEditRCActionEvent()
+    data class SaveRCAction(val title: String, val frequency: Int, val code: String, var id: Int? = null): AddEditRCActionEvent()
     object DeleteRCAction: AddEditRCActionEvent()
     data class ImportRCActions(val inputStream: InputStream?): AddEditRCActionEvent()
     data class ExportRCActions(val fileDir: File?): AddEditRCActionEvent()
